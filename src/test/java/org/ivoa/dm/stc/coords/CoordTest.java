@@ -3,8 +3,13 @@ package org.ivoa.dm.stc.coords;
  * Created on 25/04/2023 by Paul Harrison (paul.harrison@manchester.ac.uk).
  */
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.ivoa.dm.ivoa.RealQuantity;
 import org.ivoa.dm.ivoa.Unit;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  * test cases for STC Coords.
@@ -14,7 +19,7 @@ public class CoordTest extends BaseTests {
 
 
     @org.junit.jupiter.api.Test
-    public  void testAstroCoordSys() {
+    public  void testAstroCoordSys() throws JAXBException, ParserConfigurationException, TransformerException, JsonProcessingException {
        Unit deg = new Unit("deg");
          SpaceSys ICRS_SYS = new SpaceSys().withFrame(
                SpaceFrame.createSpaceFrame( f-> {
@@ -23,6 +28,7 @@ public class CoordTest extends BaseTests {
                    f.planetaryEphem="DE432";
                   }
                   ));
+
          TimeSys TIMESYS_TT = new TimeSys().withFrame(
                TimeFrame.createTimeFrame( f -> {
                   f.refPosition = new StdRefLocation("TOPOCENTRE");
@@ -47,8 +53,14 @@ public class CoordTest extends BaseTests {
                      }
                )
          );
-
-
+       CoordsModel model = new CoordsModel();
+       model.addReference(ICRS_SYS);
+       model.addReference(SPECSYS);
+       model.addReference(TIMESYS_TT);
+       validate(model);
+       model.makeRefIDsUnique();
+       CoordsModel inxml = ObroundTripXML(model);
+       CoordsModel injson = roundTripJSON(model);
     }
 
 }
