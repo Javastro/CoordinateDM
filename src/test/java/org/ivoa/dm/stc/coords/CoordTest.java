@@ -6,6 +6,7 @@ package org.ivoa.dm.stc.coords;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.ivoa.dm.ivoa.RealQuantity;
 import org.ivoa.dm.ivoa.Unit;
+import org.junit.jupiter.api.Assertions;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,9 +18,8 @@ import javax.xml.transform.TransformerException;
  */
 public class CoordTest extends BaseTests {
 
-
     @org.junit.jupiter.api.Test
-    public  void testAstroCoordSys() throws JAXBException, ParserConfigurationException, TransformerException, JsonProcessingException {
+    public  void testAstroCoordSys() throws JAXBException, JsonProcessingException, ParserConfigurationException, TransformerException {
        Unit deg = new Unit("deg");
          SpaceSys ICRS_SYS = new SpaceSys().withFrame(
                SpaceFrame.createSpaceFrame( f-> {
@@ -53,14 +53,20 @@ public class CoordTest extends BaseTests {
                      }
                )
          );
-       CoordsModel model = new CoordsModel();
-       model.addReference(ICRS_SYS);
-       model.addReference(SPECSYS);
-       model.addReference(TIMESYS_TT);
-       validate(model);
-       model.makeRefIDsUnique();
-       CoordsModel inxml = ObroundTripXML(model);
-       CoordsModel injson = roundTripJSON(model);
+       CoordsModel modelInstance = new CoordsModel();
+       modelInstance.addReference(ICRS_SYS);
+       modelInstance.addReference(SPECSYS);
+       modelInstance.addReference(TIMESYS_TT);
+       modelInstance.makeRefIDsUnique();
+
+
+       // test model instance validity
+       validate(modelInstance);
+
+
+       //do some serialization tests
+       CoordsModel inxml = modelRoundTripXMLwithTest(modelInstance);
+       CoordsModel injson = modelRoundTripJSONwithTest(modelInstance);
     }
 
 }
