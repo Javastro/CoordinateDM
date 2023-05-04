@@ -13,6 +13,8 @@ import org.ivoa.vodml.testing.AutoRoundTripWithValidationTest;
  */
 public class CoordTest extends AutoRoundTripWithValidationTest<CoordsModel> {
 
+
+   //https://github.com/mcdittmar/ivoa-dm-examples/blob/master/assets/examples/coords/current/instances/astrocoordsys.jovial
    @Override
    public CoordsModel createModel() {
       Unit deg = new Unit("deg");
