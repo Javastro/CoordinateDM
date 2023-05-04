@@ -57,7 +57,7 @@ public class CoordTest extends BaseTests {
        modelInstance.addReference(ICRS_SYS);
        modelInstance.addReference(SPECSYS);
        modelInstance.addReference(TIMESYS_TT);
-       modelInstance.makeRefIDsUnique();
+       modelInstance.processReferences(); //note auto ID handling
 
 
        // test model instance validity

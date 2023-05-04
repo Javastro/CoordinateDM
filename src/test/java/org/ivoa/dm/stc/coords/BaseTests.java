@@ -4,18 +4,15 @@ package org.ivoa.dm.stc.coords;
  */
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ivoa.vodml.VodmlModel;
-import org.ivoa.vodml.validation.BaseValidationTest;
+import org.ivoa.vodml.validation.AbstractBaseValidation;
 import org.ivoa.vodml.validation.ModelValidator;
 import org.junit.jupiter.api.Assertions;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,27 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * The base class for testing...
  *
  */
-public abstract class BaseTests extends BaseValidationTest {
+public abstract class BaseTests extends AbstractBaseValidation {
 
    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
          .getLogger(BaseTests.class);
-   private static JAXBContext jc;
-   private static ObjectMapper jsonMapper;
-
-
-   static {
-      try {
-         jc = CoordsModel.contextFactory();
-         jsonMapper = CoordsModel.jsonMapper();
-         CoordsModel.writeXMLSchema();
-      } catch (JAXBException e) {
-         throw new RuntimeException(e);
-      }
-   }
-
 
    protected void validate(CoordsModel modelInstance) throws JAXBException {
-      ModelValidator.ValidationResult res = validate(modelInstance.management(),new File("coords.xsd"));
+      ModelValidator.ValidationResult res = validateModel(modelInstance);
       if(!res.isOk){
          res.printValidationErrors(System.out);
       }
