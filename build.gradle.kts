@@ -1,5 +1,5 @@
 plugins {
-    id("net.ivoa.vo-dml.vodmltools") version "0.3.19"
+    id("net.ivoa.vo-dml.vodmltools") version "0.4.2"
     `maven-publish`
     application
 }
@@ -45,11 +45,43 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("mavenJava") {
             from(components["java"])
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name.set("VO-DML IVOA Base Model")
+                description.set("The code generated from the IVOA base model that is included in most other models")
+                url.set("https://www.ivoa.net/documents/CoordinateDM/")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers { //FIXME should add the
+                    developer {
+                        id.set("pahjbo")
+                        name.set("Paul Harrison")
+                        email.set("paul.harrison@manchester.ac.uk")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/ivoa-std/CoordinateDM.git")
+                    developerConnection.set("scm:git:ssh://github.com/ivoa-std/CoordinateDM.git")
+                    url.set("https://github.com/ivoa-std/CoordinateDM")
+                }
+            }
         }
     }
 }
+
 
 application {
     mainClass.set("Genschema")
