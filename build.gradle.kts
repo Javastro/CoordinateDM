@@ -2,10 +2,12 @@ plugins {
     id("net.ivoa.vo-dml.vodmltools") version "0.4.2"
     `maven-publish`
     application
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+    signing
 }
 
 group = "org.javastro.ivoa.dm"
-version = "1.0-SNAPSHOT"
+version = "1.1-SNAPSHOT"
 
 vodml {
     vodmlDir.set(file("vo-dml"))
@@ -31,7 +33,7 @@ tasks.test {
 }
 
 dependencies {
-    api("org.javastro.ivoa.vo-dml:ivoa-base:1.0-SNAPSHOT") // IMPL using API so that it appears in transitive compile
+    api("org.javastro.ivoa.vo-dml:ivoa-base:1.1-SNAPSHOT") // IMPL using API so that it appears in transitive compile
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 
@@ -41,6 +43,10 @@ dependencies {
     testImplementation("org.apache.derby:derby:10.14.2.0")
     testImplementation("org.javastro:jaxbjpa-utils:0.1.2")
     testImplementation("org.javastro:jaxbjpa-utils:0.1.2:test")
+}
+
+tasks.named<Jar>("jar") {
+    exclude("META-INF/persistence.xml")
 }
 
 publishing {
@@ -65,7 +71,7 @@ publishing {
                         url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
                 }
-                developers { //FIXME should add the
+                developers { //FIXME should add the other authors...
                     developer {
                         id.set("pahjbo")
                         name.set("Paul Harrison")
@@ -80,6 +86,25 @@ publishing {
             }
         }
     }
+}
+
+//publishing - IMPL would be nice to factor this out in some way....
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
+}
+signing {
+    setRequired { !project.version.toString().endsWith("-SNAPSHOT") && !project.hasProperty("skipSigning") }
+
+    if (!project.hasProperty("skipSigning")) {
+        useGpgCmd()
+        sign(publishing.publications["mavenJava"])
+    }
+}
+//do not generate extra load on Nexus with new staging repository if signing fails
+tasks.withType<io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository>().configureEach{
+    shouldRunAfter(tasks.withType<Sign>())
 }
 
 

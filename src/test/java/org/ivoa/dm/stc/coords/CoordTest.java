@@ -4,7 +4,7 @@ package org.ivoa.dm.stc.coords;
  */
 
 import org.ivoa.dm.ivoa.RealQuantity;
-import org.ivoa.dm.ivoa.Unit;
+import org.ivoa.vodml.stdtypes.Unit;
 import org.ivoa.vodml.testing.AutoRoundTripWithValidationTest;
 
 /**
