@@ -1,8 +1,8 @@
 
-model coords (1.0) "This model defines objects which describe the coordinate space, coordinates within that space, and frames, which provide additional metadata regarding the origin, orientation, etc, of the coordinate space. The model also defines a coordinate system, bundling frames into associated groups.
+model coords (1.1) "This model defines objects which describe the coordinate space, coordinates within that space, and frames, which provide additional metadata regarding the origin, orientation, etc, of the coordinate space. The model also defines a coordinate system, bundling frames into associated groups.
 "
      
- author "Arnold Rots, Mark Cresitello-Dittmar, Omar Laurino"
+ author "Arnold Rots, Mark Cresitello-Dittmar, Omar Laurino, Paul Harrison"
        include "../build/tmp/IVOA-v1.0.vodsl" // note that this is auto generated from dependencies during build
      
     primitive Epoch  "We define epoch as a primitive data type with the expected form '{type}{year}' where type = 'J' or 'B' for Julian or Besselian respectively, and year is expressed as a decimal year.  e.g.: 'B1950', 'J2000.0'"
@@ -93,10 +93,10 @@ abstract dtype TimeStamp  -> Coordinate "This is the abstract basis for a set of
 dtype TimeOffset  -> TimeStamp "Time is given as an offset from a specific point in time (time0)."
   {   
         time: ivoa:RealQuantity   "The TimeOffset coordinate value.";
-        time0: TimeInstant   "The reference time from which the offset is calculated.  This MUST be given as a TimeInstant (e.g.: JD, MJD, ISOTime).";
+        time0: TimeInstant   "The reference time from which the offset is calculated.  This MUST be given as a TimeInstant (e.g.: JD, MJD, FITSTime).";
   }
 
-abstract dtype TimeInstant  -> TimeStamp "TimeStamps which specify a specific instant in time.  We define three subtypes (ISOTime, JD, MJD), which allow users to explicitly identify the representation and interpretation of the TimeInstant."
+abstract dtype TimeInstant  -> TimeStamp "TimeStamps which specify a specific instant in time.  We define three subtypes (FITSTime, JD, MJD), which allow users to explicitly identify the representation and interpretation of the TimeInstant."
   {   
   }
 
@@ -110,25 +110,23 @@ dtype MJD  -> TimeInstant "Extension of TimeInstant for time expressed in Modifi
         date: ivoa:real   "The MJD coordinate value.  MJD dates are dimensionless, with implied units in days.";
   }
 
-dtype ISOTime  -> TimeInstant "Extension of TimeInstant for time expressed as a structured datetime string.
+// see https://github.com/ivoa-std/CoordinateDM/issues/16
+dtype FITSTime  -> TimeInstant "Extension of TimeInstant for time expressed as a structured datetime string.
 The string representation of a datetime value should follow the FITS convention for representing dates (Hanish and Farris et al, 2001).  The FITS standard is effectively ISO8601 format without the 'Z' tag to indicate UTC:  YYYY-MM-DD['T'hh:mm:ss[.SSS]].  The TimeScale is provided in the associated TimeFrame."
   {   
-        date: ivoa:datetime   "The ISOTime coordinate value.";
+        date: ivoa:string   "The FITSTime coordinate value.";
   }
 
 abstract dtype PolCoordinate  -> Coordinate "Abstract head of the polarization coordinate types. Current use cases only require support for discrete polarization states, however, we include this head class to facilitate extension for other types (eg: polarization fraction and angle)."
   {   
   }
 
-dtype PolState  -> PolCoordinate "Coordinate type for discrete polarization states.
-"
+dtype PolState  -> PolCoordinate "Coordinate type for discrete polarization states."
   {   
-        cval: PolStateEnum   "The coordinate value MUST be from the PolStateEnum enumerated set.
-";
+        cval: PolStateEnum   "The coordinate value MUST be from the PolStateEnum enumerated set.";
   }
 
-abstract dtype RefLocation  "RefLocation defines the origin of the spatial coordinate space.  This location is represented either by a standard reference position (for which the absolute location in phase space is known by definition), or a specified point in another Spatial frame.  This object is used as the origin of the SpaceFrame here, but also to specify the Spatial Reference Position (refPosition) associated with other domain Frames.  For example, in the Time domain, the Spatial Reference Position indicates that the 'time' values are the time that the 'event' occured at that location, which might be different from the detector location.  
- "
+abstract dtype RefLocation  "RefLocation defines the origin of the spatial coordinate space.  This location is represented either by a standard reference position (for which the absolute location in phase space is known by definition), or a specified point in another Spatial frame.  This object is used as the origin of the SpaceFrame here, but also to specify the Spatial Reference Position (refPosition) associated with other domain Frames.  For example, in the Time domain, the Spatial Reference Position indicates that the 'time' values are the time that the 'event' occured at that location, which might be different from the detector location.  "
   {   
   }
 
@@ -257,3 +255,35 @@ otype CartesianCoordSpace  -> PhysicalCoordSpace "Spatial domain, three-dimensio
   {   // constraint  axis[1..3]
      subset coords:CoordSpace.axis as coords:ContinuousAxis;
   }
+
+// see https://github.com/ivoa-std/CoordinateDM/issues/4
+dtype EquatorialPoint  -> Point "A Point on the Unit Sphere"
+  {
+        lon: ivoa:RealQuantity    "The longitudinal angle";
+        lat: ivoa:RealQuantity     "The latitudinal angle";
+  }
+
+
+ // equivalent to LonLatPoint
+dtype SphericalPoint  -> Point "A point in space expressed in spherical coordinates"
+  {
+        r: ivoa:RealQuantity     "radius";
+        theta: ivoa:RealQuantity   "polar angle";
+        phi: ivoa:RealQuantity   "azimuthal angle";
+  }
+
+//added to make the values "Real" see https://github.com/ivoa/vo-dml/discussions/38
+//this is practical to that the code generation can do something normal
+//though a special case could be made with Quantity to expect a "value" too.
+
+dtype RealCartesianPoint  -> Point "A spatial coordinate in a Cartesian coordinate space.  Any associated CoordSpace MUST be a CartesianCoordSpace.  If no CoordSpace is provided, a Standard Cartesian CoordSpace is assumed.  Real values are used in the cartesian points.
+"
+  {
+        x: ivoa:RealQuantity     "The coordinate value along the 'X' axis.";
+        y: ivoa:RealQuantity     "The coordinate value along the 'Y' axis.";
+        z: ivoa:RealQuantity     "The coordinate value along the 'Z' axis.";
+  }
+
+
+
+
