@@ -1,5 +1,5 @@
 plugins {
-    id("net.ivoa.vo-dml.vodmltools") version "0.4.2"
+    id("net.ivoa.vo-dml.vodmltools") version "0.5.3"
     `maven-publish`
     application
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "org.javastro.ivoa.dm"
-version = "1.1-SNAPSHOT"
+version = "1.1.1-SNAPSHOT"
 
 vodml {
     vodmlDir.set(file("vo-dml"))
@@ -20,6 +20,13 @@ vodml {
 tasks.named("vodmlJavaGenerate") {
     dependsOn("vodslToVodml")
 }
+tasks.named("vodmlSchema") {
+    dependsOn("vodslToVodml")
+}
+tasks.named("vodmlSite") {
+    dependsOn("vodslToVodml")
+}
+
 
 tasks.register("UmlToVodml", net.ivoa.vodml.gradle.plugin.XmiTask::class.java) {
     xmiScript.set("xmi2vo-dml_Modelio3.7_UML2.4.1.xsl") // the conversion script
