@@ -7,5 +7,6 @@
 <file>Coords-v1.0.vo-dml.xml</file>
     <java-package>org.ivoa.dm.stc.coords</java-package>
 <xml-targetnamespace prefix="coord">http://ivoa.net/dm/models/vo-dml/xsd/stc/coords/</xml-targetnamespace>
+    <rdb fetching="eager"/>
 </model>
 </m:mappedModels>
