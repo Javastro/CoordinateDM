@@ -20,7 +20,7 @@ public class CoordTest extends AutoRoundTripWithValidationTest<CoordsModel> {
       Unit deg = new Unit("deg");
       SpaceSys ICRS_SYS = new SpaceSys().withFrame(
             SpaceFrame.createSpaceFrame( f-> {
-                     f.refPosition = new StdRefLocation("TOPOCENTRE");
+                     f.refPosition = new StdRefLocation("TOPOCENTER");
                      f.spaceRefFrame="ICRS";
                      f.planetaryEphem="DE432";
                   }
@@ -28,7 +28,7 @@ public class CoordTest extends AutoRoundTripWithValidationTest<CoordsModel> {
 
       TimeSys TIMESYS_TT = new TimeSys().withFrame(
             TimeFrame.createTimeFrame( f -> {
-               f.refPosition = new StdRefLocation("TOPOCENTRE");
+               f.refPosition = new StdRefLocation("TOPOCENTER");
                f.timescale = "TT";
                f.refDirection = new CustomRefLocation()
                      .withEpoch(new Epoch("J2014.25"))
@@ -45,7 +45,7 @@ public class CoordTest extends AutoRoundTripWithValidationTest<CoordsModel> {
       );
       GenericSys SPECSYS = new GenericSys().withFrame(
             GenericFrame.createGenericFrame(f -> {
-                     f.refPosition = new StdRefLocation("TOPOCENTRE");
+                     f.refPosition = new StdRefLocation("TOPOCENTER");
                      f.planetaryEphem = "DE432";
                   }
             )

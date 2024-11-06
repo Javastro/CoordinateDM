@@ -1,7 +1,6 @@
 plugins {
-    id("net.ivoa.vo-dml.vodmltools") version "0.5.5"
+    id("net.ivoa.vo-dml.vodmltools") version "0.5.10"
     `maven-publish`
-    application
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     signing
 }
@@ -113,8 +112,12 @@ signing {
 tasks.withType<io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository>().configureEach{
     shouldRunAfter(tasks.withType<Sign>())
 }
-
-
-application {
-    mainClass.set("Genschema")
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17)) // moved to Java 17
+    }
+    withJavadocJar()
+    withSourcesJar()
 }
+
+
