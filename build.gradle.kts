@@ -1,5 +1,5 @@
 plugins {
-    id("net.ivoa.vo-dml.vodmltools") version "0.5.10"
+    id("net.ivoa.vo-dml.vodmltools") version "0.5.11"
     `maven-publish`
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     signing
@@ -47,8 +47,7 @@ dependencies {
     testRuntimeOnly("ch.qos.logback:logback-classic:1.2.3")
 
     testImplementation("org.apache.derby:derby:10.14.2.0")
-    testImplementation("org.javastro:jaxbjpa-utils:0.1.2")
-    testImplementation("org.javastro:jaxbjpa-utils:0.1.2:test")
+    testImplementation("org.javastro:jaxbjpa-utils:0.2.3")
 }
 
 tasks.named<Jar>("jar") {
