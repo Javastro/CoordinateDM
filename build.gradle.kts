@@ -1,5 +1,5 @@
 plugins {
-    id("net.ivoa.vo-dml.vodmltools") version "0.5.13"
+    id("net.ivoa.vo-dml.vodmltools") version "0.5.26"
     `maven-publish`
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     signing
@@ -96,9 +96,15 @@ publishing {
 //publishing - IMPL would be nice to factor this out in some way....
 nexusPublishing {
     repositories {
-        sonatype()
+        //TODO this is a rather unsatisfactory kludge, but still seems better than the suggested JReleaser which is not really gradle friendly
+        // see https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#configuration
+        sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+        }
     }
 }
+
 signing {
     setRequired { !project.version.toString().endsWith("-SNAPSHOT") && !project.hasProperty("skipSigning") }
 
