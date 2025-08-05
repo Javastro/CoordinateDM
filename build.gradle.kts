@@ -1,12 +1,12 @@
 plugins {
-    id("net.ivoa.vo-dml.vodmltools") version "0.5.26"
+    id("net.ivoa.vo-dml.vodmltools") version "0.5.27"
     `maven-publish`
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     signing
 }
 
 group = "org.javastro.ivoa.dm"
-version = "1.1.2-SNAPSHOT"
+version = "1.1.5-SNAPSHOT"
 
 vodml {
     vodmlDir.set(file("vo-dml"))
@@ -39,7 +39,7 @@ tasks.test {
 }
 
 dependencies {
-    api("org.javastro.ivoa.vo-dml:ivoa-base:1.1-SNAPSHOT") // IMPL using API so that it appears in transitive compile
+    api("org.javastro.ivoa.vo-dml:ivoa-base:1.0-SNAPSHOT") // IMPL using API so that it appears in transitive compile
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 
